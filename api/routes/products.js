@@ -6,7 +6,9 @@ router.get("/", (req, res, next) => {
     Product.find()
         .exec()
         .then((docs) => {
-            console.log(docs);
+            res.status(201).json({
+                data: docs
+            });
         })
         .catch((err) => {
             console.log(err);
@@ -73,7 +75,17 @@ router.patch("/:productId", (req, res, next) => {
 });
 router.delete("/:productId", (req, res, next) => {
     const id = req.params.productId;
-    Product.remove({ _id: id });
+    Product.remove({ _id: id })
+        .exec((res) => {
+            res.status(200).json(res);
+        })
+        .then()
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
 });
 
 module.exports = router;
