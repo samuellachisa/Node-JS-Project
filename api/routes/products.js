@@ -6,17 +6,15 @@ router.get("/", (req, res, next) => {
     Product.find()
         .exec()
         .then((docs) => {
-            if(docs.length>=0){
+            if (docs.length >= 0) {
                 res.status(201).json({
                     data: docs
                 });
-            }
-            else{
+            } else {
                 res.status(404).json({
-                    message:"No entries found"
-                })
+                    message: "No entries found"
+                });
             }
-            
         })
         .catch((err) => {
             console.log(err);
@@ -77,17 +75,27 @@ router.get("/:productId", (req, res, next) => {
 });
 
 router.patch("/:productId", (req, res, next) => {
-  
-const id=req.params.productId; 
-const updateOps={};
- for(const ops of req.body)
- {
-    updateOps[ops.propName]=ops.value;
- }
+    const id = req.params.productId;
+    const updateOps = {};
+    for (const ops of req.body) {
+        updateOps[ops.propName] = ops.value;
+    }
 
-    Product.update({
-        _id:id
-    }, {$set:updateOps});
+    Product.update(
+        {
+            _id: id
+        },
+        { $set: updateOps }
+    )
+        .exec()
+        .then((result) => {
+            res.status(200).json({ result });
+        })
+        .catch(
+            res.status(500).json({
+                error: err
+            })
+        );
 });
 router.delete("/:productId", (req, res, next) => {
     const id = req.params.productId;
